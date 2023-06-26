@@ -1,0 +1,71 @@
+api_endpoint: central-stackrox.apps.home.ocplab.com
+# change if the UI is hosted on a different endpoint:
+ui_endpoint: "{{ api_endpoint }}"
+
+auth_provider: {name: OpenShift, type: openshift}
+default_auth_provider_role: None
+
+permission_sets:
+  - name: Namespace Adminstrator
+    description: A user that is an administrator of one or namespaces across various clusters
+    resourceToAccess:
+      Access: NO_ACCESS
+      Administration: NO_ACCESS
+      Alert: READ_ACCESS
+      CVE: READ_ACCESS
+      Cluster: READ_ACCESS
+      Compliance: READ_ACCESS
+      Deployment: READ_ACCESS
+      DeploymentExtension: READ_ACCESS
+      Detection: READ_ACCESS
+      Image: READ_ACCESS
+      Integration: NO_ACCESS
+      K8sRole: READ_ACCESS
+      K8sRoleBinding: READ_ACCESS
+      K8sSubject: READ_ACCESS
+      Namespace: READ_ACCESS
+      NetworkGraph: READ_ACCESS
+      NetworkPolicy: READ_ACCESS
+      Node: READ_ACCESS
+      Policy: READ_ACCESS
+      Secret: READ_ACCESS
+      ServiceAccount: READ_ACCESS
+      WatchedImage: READ_WRITE_ACCESS
+      VulnerabilityManagementApprovals: READ_ACCESS
+      VulnerabilityManagementRequests: READ_WRITE_ACCESS
+
+access_scopes:
+  - name: coolstore-admins
+    description: Access rights for users that can manage Product Catalog namespaces
+    rules:
+      includedClusters: []
+      includedNamespaces:
+      - clusterName: local-cluster
+        namespaceName: coolstore-dev
+      - clusterName: local-cluster
+        namespaceName: coolstore-stage
+      - clusterName: local-cluster
+        namespaceName: coolstore-prod
+      - clusterName: local-cluster
+        namespaceName: coolstore-cicd
+      clusterLabelSelectors: []
+      namespaceLabelSelectors: []
+
+roles:
+  - name: Coolstore Admins
+    description: Administrators of product coolstore namespaces
+    permission_set: Namespace Adminstrator
+    access_scope: coolstore-admins
+    global_access: NO_ACCESS
+
+# Associate roles with users/groups in Provider
+role_mappings:
+  - key: name
+    value: admin
+    role_name: Admin
+  - key: name
+    value: opentlc-mgr
+    role_name: Admin
+  - key: groups
+    value: coolstore-admins
+    role_name: Coolstore Admins
